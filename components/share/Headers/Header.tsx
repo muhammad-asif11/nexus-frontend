@@ -1,0 +1,72 @@
+"use client";
+import React, { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Menu, X } from "lucide-react";
+import MobileMenu from "./MobileMenu";
+import Logo from "../Logo";
+import { ICONS, NavigateURL } from "@/components/utills/const";
+import SearchBar from "../Search";
+import { Icon } from "../Icon";
+import ProfileMenu from "../ProfileMenu";
+import Button from "../Button";
+
+const Header = () => {
+  const pathname = usePathname();
+  const [isOpen, setIsOpen] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  return (
+    <header className="w-full border-b border-gray-200 bg-white relative">
+      <div className="flex justify-between items-center px-4 sm:px-8 lg:px-10 py-4">
+        {/* Logo */}
+        <Logo />
+
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex gap-4 lg:gap-8">
+          {NavigateURL.map((item) => {
+            const isActive = pathname.startsWith(item.link);
+
+            return (
+              <Link
+                href={item.link}
+                key={item.id}
+                className={`pb-1 border-b-2 transition ${
+                  isActive
+                    ? "border-black text-black"
+                    : "border-transparent text-gray-500 hover:text-black"
+                }`}
+              >
+                {item.title}
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* Desktop Icons */}
+        <div className="hidden relative md:flex items-center gap-4">
+          <SearchBar title="What are you looking for?" className="bg-shadoWhite" />
+          <Icon name="heart" className="text-2xl" />
+          <Icon name="cart" className="text-2xl" />
+          <Button
+            title=""
+            onClick={() => setOpen(!open)}
+            style="hover:bg-Narangi hover:text-white text-2xl p-2 rounded-full cursor-pointer"
+            icon="User"
+          />
+          {open && <ProfileMenu />}
+        </div>
+
+        {/* ====== Mobile Hamburger ========= */}
+        <button className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
+          {isOpen ? <X size={28} /> : <Menu size={28} />}
+        </button>
+      </div>
+
+      {/* Separate Mobile Component */}
+      <MobileMenu isOpen={isOpen} onClose={() => setIsOpen(false)} />
+    </header>
+  );
+};
+
+export default Header;
